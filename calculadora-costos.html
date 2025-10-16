@@ -5,6 +5,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Calculadora de Costos — Carezza (v2)</title>
   <meta name="description" content="Versión robusta: cálculos por unidad, IVA y margen."/>
+ <style>
+    :root{
+      --lav:#b5a7cb; --beige:#f8dcc0; --ink:#1f2937; --muted:#6b7280; --bg:#fffaf6; --card:#ffffff;
+      --radius:22px; --shadow:0 18px 45px rgba(31,41,55,.08);
+    }
+    html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Montserrat,system-ui,-apple-system,Segoe UI,Roboto,Arial}
+    a{color:inherit}
+    .wrap{max-width:1100px;margin:0 auto;padding:20px}
+    header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0}
+    .brand{display:flex;align-items:center;gap:10px}
+    .logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--lav),var(--beige));box-shadow:0 8px 20px rgba(0,0,0,.08)}
+    .brand h1{font-size:18px;margin:0;font-weight:800;letter-spacing:.3px}
+    .nav{display:flex;gap:10px;align-items:center}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 16px;border-radius:999px;border:0;cursor:pointer;font-weight:800;text-decoration:none}
+    .btn.shop{background:#111;color:#fff}
+    .btn.ghost{background:transparent;border:1px dashed #ddd;color:#374151}
+    .hero{margin:6px 0 24px;border-radius:26px;padding:20px;background:linear-gradient(120deg,rgba(181,167,203,.15),rgba(248,220,192,.35));box-shadow:0 30px 60px rgba(181,167,203,.15)}
+    .hero h2{margin:0 0 8px;font-size:clamp(22px,3.2vw,34px)}
+    .hero p{margin:0;color:var(--muted)}
+    footer{margin:26px 0;color:var(--muted);text-align:center;font-size:13px}
+    .shopbar{margin-top:24px;text-align:center}
+    .shopbtn{display:inline-flex;align-items:center;gap:10px;background:var(--lav);color:#fff;border-radius:999px;padding:12px 18px;font-weight:800;text-decoration:none}
+    .shopbtn:hover{opacity:.95}
+  </style>
+  
   <style>
     :root{--lav:#b5a7cb;--beige:#f8dcc0;--ink:#333;--bg:#f9f7f5}
     *{box-sizing:border-box}body{font-family:Arial,system-ui; background:var(--bg); margin:0; padding:20px; color:var(--ink)}
@@ -25,6 +50,16 @@
     @media(max-width:900px){.grid{grid-template-columns:1fr 1fr}.resg{grid-template-columns:1fr}}
   </style>
 </head>
+  <header>
+    <div class="brand">
+      <div class="logo" aria-hidden="true"></div>
+      <h1>Carezza Creaciones</h1>
+    </div>
+    <nav class="nav">
+      <a href="index.html" class="btn ghost">Centro de herramientas</a>
+      <a id="link-tienda" class="btn shop" target="_blank" rel="noopener">Ir a la Tienda</a>
+    </nav>
+  </header>
 <body>
 <div id="note" class="note"></div>
 <div class="container" id="app">
@@ -252,5 +287,11 @@
     }
   });
 })();</script>
+<script>
+  const URL_TIENDA = "https://carezzacreaciones.cl";
+  const UTM = "?utm_source=portal_herramientas&utm_medium=referral&utm_campaign=trafico_tienda";
+  const link = document.getElementById("link-tienda");
+  if (link) link.href = URL_TIENDA + UTM;
+</script>
 </body>
 </html>
