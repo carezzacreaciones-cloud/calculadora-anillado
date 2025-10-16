@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Calculadora de Presupuestos — Carezza</title>
+  <meta name="description" content="Cotizador simple con ítems, IVA y totales."/>
+  <meta name="theme-color" content="#b5a7cb" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --lav:#b5a7cb; --beige:#f8dcc0; --ink:#1f2937; --muted:#6b7280; --bg:#fffaf6; --card:#ffffff;
+      --radius:22px; --shadow:0 18px 45px rgba(31,41,55,.08);
+    }
+    html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Montserrat,system-ui,-apple-system,Segoe UI,Roboto,Arial}
+    a{color:inherit}
+    .wrap{max-width:1100px;margin:0 auto;padding:20px}
+    header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0}
+    .brand{display:flex;align-items:center;gap:10px}
+    .logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--lav),var(--beige));box-shadow:0 8px 20px rgba(0,0,0,.08)}
+    .brand h1{font-size:18px;margin:0;font-weight:800;letter-spacing:.3px}
+    .nav{display:flex;gap:10px;align-items:center}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 16px;border-radius:999px;border:0;cursor:pointer;font-weight:800;text-decoration:none}
+    .btn.shop{background:#111;color:#fff}
+    .btn.ghost{background:transparent;border:1px dashed #ddd;color:#374151}
+    .hero{margin:6px 0 24px;border-radius:26px;padding:20px;background:linear-gradient(120deg,rgba(181,167,203,.15),rgba(248,220,192,.35));box-shadow:0 30px 60px rgba(181,167,203,.15)}
+    .hero h2{margin:0 0 8px;font-size:clamp(22px,3.2vw,34px)}
+    .hero p{margin:0;color:var(--muted)}
+    footer{margin:26px 0;color:var(--muted);text-align:center;font-size:13px}
+    .shopbar{margin-top:24px;text-align:center}
+    .shopbtn{display:inline-flex;align-items:center;gap:10px;background:var(--lav);color:#fff;border-radius:999px;padding:12px 18px;font-weight:800;text-decoration:none}
+    .shopbtn:hover{opacity:.95}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="logo" aria-hidden="true"></div>
+      <h1>Carezza Creaciones</h1>
+    </div>
+    <nav class="nav">
+      <a href="index.html" class="btn ghost">Centro de herramientas</a>
+      <a id="link-tienda" class="btn shop" target="_blank" rel="noopener">Ir a la Tienda</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <h2>Calculadora de Presupuestos / Cotizaciones</h2>
+    <p>Agrega ítems, cantidades y precios. Calculamos subtotales, IVA (19%) y total. Copia o exporta.</p>
+  </section>
+  <style>
+    .card{background:#fff;border-radius:22px;box-shadow:0 18px 45px rgba(31,41,55,.08);padding:20px}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:10px;border-bottom:1px solid #eee;text-align:left}
+    th{background:#fafafa}
+    input[type=text], input[type=number]{width:100%;padding:8px;border:1px solid #e5e7eb;border-radius:10px}
+    .controls{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
+    .btn{border:none;border-radius:10px;padding:10px 14px;font-weight:800;cursor:pointer}
+    .btn.primary{background:#b5a7cb;color:#fff}
+    .btn.ghost{background:transparent;border:1px dashed #d1d5db;color:#374151}
+    .totals{display:grid;gap:6px;justify-content:end;margin-top:12px}
+    .totals div{display:flex;gap:12px;align-items:center}
+    .totals label{min-width:120px;text-align:right;font-weight:700}
+    .right{text-align:right}
+  </style>
+  <div class="card">
+    <div class="controls">
+      <button id="addRow" class="btn primary">+ Agregar ítem</button>
+      <button id="copy" class="btn ghost">Copiar resumen</button>
+      <button id="csv" class="btn ghost">Descargar CSV</button>
+    </div>
+    <table id="tbl">
+      <thead>
+        <tr>
+          <th style="width:44%">Descripción</th>
+          <th style="width:14%">Cant.</th>
+          <th style="width:18%">P. Unitario</th>
+          <th style="width:18%">Subtotal</th>
+          <th style="width:6%"></th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <div class="totals">
+      <div><label>Subtotal</label><div id="t_sub" class="right">$ 0</div></div>
+      <div><label>IVA (19%)</label><div id="t_iva" class="right">$ 0</div></div>
+      <div><label>Total</label><div id="t_tot" class="right"><strong>$ 0</strong></div></div>
+    </div>
+  </div>
+  <script>
+    (function(){
+      const tbody = document.querySelector('#tbl tbody');
+      const fmt = n => new Intl.NumberFormat('es-CL',{style:'currency',currency:'CLP',maximumFractionDigits:0}).format(n||0);
+      function addRow(desc='', qty=1, price=0){
+        const tr = document.createElement('tr');
+        tr.innerHTML = \`
+          <td><input type="text" value="\${desc}" placeholder="Descripción del ítem"></td>
+          <td><input type="number" min="0" step="1" value="\${qty}"></td>
+          <td><input type="number" min="0" step="10" value="\${price}"></td>
+          <td class="right subtotal">$ 0</td>
+          <td><button class="btn ghost del">✕</button></td>
+        \`;
+        tbody.appendChild(tr);
+        tr.querySelectorAll('input').forEach(i=> i.addEventListener('input', recalc));
+        tr.querySelector('.del').addEventListener('click', ()=>{ tr.remove(); recalc(); });
+        recalc();
+      }
+      function recalc(){
+        let sub=0;
+        tbody.querySelectorAll('tr').forEach(tr=>{
+          const qty = parseFloat(tr.children[1].querySelector('input').value)||0;
+          const price = parseFloat(tr.children[2].querySelector('input').value)||0;
+          const s = qty * price;
+          sub += s;
+          tr.querySelector('.subtotal').textContent = fmt(s);
+        });
+        const iva = sub * 0.19;
+        const tot = sub + iva;
+        document.getElementById('t_sub').textContent = fmt(sub);
+        document.getElementById('t_iva').textContent = fmt(iva);
+        document.getElementById('t_tot').textContent = fmt(tot);
+      }
+      function toCSV(){
+        const head = ['Descripcion','Cantidad','PrecioUnitario','Subtotal'];
+        const lines = [head.join(',')];
+        tbody.querySelectorAll('tr').forEach(tr=>{
+          const d = tr.children[0].querySelector('input').value.replace(/,/g,' ');
+          const q = tr.children[1].querySelector('input').value||'0';
+          const p = tr.children[2].querySelector('input').value||'0';
+          const s = (parseFloat(q)||0)*(parseFloat(p)||0);
+          lines.push([d,q,p,s].join(','));
+        });
+        return lines.join('\n');
+      }
+      document.getElementById('addRow').addEventListener('click', ()=> addRow());
+      document.getElementById('copy').addEventListener('click', ()=>{
+        const sub = document.getElementById('t_sub').textContent;
+        const iva = document.getElementById('t_iva').textContent;
+        const tot = document.getElementById('t_tot').textContent;
+        const txt = \`Resumen de cotización — Subtotal: \${sub}, IVA: \${iva}, Total: \${tot}\`;
+        navigator.clipboard.writeText(txt);
+      });
+      document.getElementById('csv').addEventListener('click', ()=>{
+        const blob = new Blob([toCSV()],{type:'text/csv;charset=utf-8;'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = 'cotizacion.csv'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+      });
+      addRow('Servicio/Producto', 1, 10000);
+    })();
+  </script>
+
+  <footer>© Carezza Creaciones — Herramientas gratuitas para organizar y crear. Hecho con amor 💜</footer>
+</div>
+<script>
+  const URL_TIENDA = "https://tu-tienda.tiendanube.com";
+  const UTM = "?utm_source=portal_herramientas&utm_medium=referral&utm_campaign=trafico_tienda";
+  const link = document.getElementById("link-tienda");
+  if (link) link.href = URL_TIENDA + UTM;
+</script>
+</body>
+</html>
