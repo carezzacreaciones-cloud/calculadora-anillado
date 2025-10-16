@@ -1,67 +1,122 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Carezza — Calculadora de Anillado</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Centro de Anillado — Calculadora de Márgenes (mm)</title>
   <style>
     :root{
-      --lavanda:#b5a7cb; --beige:#f8dcc0; --ink:#1f2937; --muted:#6b7280;
+      --bg:#fbfaf7;--card:#ffffff;--ink:#1f2937;--muted:#6b7280;--brand:#7c6cff;--ok:#22c55e;--warn:#f59e0b;
+      --radius:18px;--shadow:0 10px 30px rgba(31,41,55,.08);
     }
-    html,body{margin:0;background:#fff;color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial}
-    .wrap{max-width:1100px;margin:0 auto;padding:20px}
-    header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0}
-    .brand{font-weight:800;letter-spacing:.3px}
-    .tag{font-size:12px;color:#555;background:linear-gradient(90deg,var(--lavanda),var(--beige));-webkit-background-clip:text;background-clip:text;color:transparent}
-    .hero{display:grid;gap:18px}
-    .cta{display:inline-flex;align-items:center;gap:10px;border:0;border-radius:999px;padding:12px 18px;
-         font-weight:800;cursor:pointer;background:var(--lavanda);color:#fff;text-decoration:none}
-    .cta.secondary{background:#111;color:#fff}
-    .embed{margin-top:14px}
-    footer{margin:28px 0 10px;color:var(--muted);font-size:12px;text-align:center}
+    html,body{background:var(--bg);color:var(--ink);font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial;margin:0;padding:0;}
+    .wrap{max-width:700px;margin:40px auto;padding:20px}
+    h1{font-size:clamp(22px,3vw,30px);margin-bottom:10px;text-align:center}
+    p.lead{text-align:center;color:var(--muted);margin-bottom:24px}
+    .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px}
+    label{display:block;margin-bottom:6px;font-weight:600;color:var(--ink)}
+    input[type=number]{width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;font-size:16px}
+    input[type=number]:focus{border-color:var(--brand);outline:none;box-shadow:0 0 0 3px rgba(124,108,255,.15)}
+    .fields{display:grid;gap:20px;margin-bottom:20px}
+    .out{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:16px;justify-content:center}
+    .pill{background:#f3f4f6;border-radius:999px;padding:8px 14px;font-weight:600}
+    .pill.ok{background:#ecfdf5;color:#065f46}
+    .pill.warn{background:#fffbeb;color:#7c2d12}
+    .btn{border:none;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer}
+    .btn.primary{background:var(--brand);color:white}
+    .btn.ghost{background:transparent;border:1px dashed #d1d5db;color:#374151}
+    .callout{border-left:4px solid var(--brand);background:#f8f7ff;padding:14px;border-radius:10px;font-size:15px;}
+    footer{text-align:center;color:var(--muted);font-size:12px;margin-top:30px}
   </style>
 </head>
 <body>
   <div class="wrap">
-    <header>
-      <div>
-        <div class="brand">Carezza Creaciones</div>
-        <div class="tag">Herramientas para organización</div>
-      </div>
-      <a id="cta-open" class="cta" target="_blank" rel="noopener">Abrir Calculadora</a>
-    </header>
+    <h1>Centro de Anillado</h1>
+    <p class="lead">Ingresa los márgenes desde el <strong>inicio</strong> y el <strong>fin</strong> del borde a perforar (en milímetros) para saber cuánto debes mover para que el anillado quede centrado.</p>
 
-    <section class="hero">
-      <p>Abre la calculadora de márgenes de anillado en una nueva pestaña o explora el diseño a continuación.</p>
-
-      <!-- Canva embed START (pasted as-is from the user) -->
-      <div style="position: relative; width: 100%; height: 0; padding-top: 56.2225%;
-      padding-bottom: 0; box-shadow: 0 2px 8px 0 rgba(63,69,81,0.16); margin-top: 1.6em; margin-bottom: 0.9em; overflow: hidden;
-      border-radius: 8px; will-change: transform;">
-        <iframe loading="lazy" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; border: none; padding: 0;margin: 0;"
-          src="https://www.canva.com/design/DAG19rSXH8Y/xRJu3TwZ7jbox5F2It-lwA/view?embed" allowfullscreen="allowfullscreen" allow="fullscreen">
-        </iframe>
+    <div class="card">
+      <div class="fields">
+        <div>
+          <label for="inicio">Margen desde INICIO (mm)</label>
+          <input id="inicio" type="number" inputmode="decimal" min="0" step="0.1" value="10">
+        </div>
+        <div>
+          <label for="fin">Margen desde FIN (mm)</label>
+          <input id="fin" type="number" inputmode="decimal" min="0" step="0.1" value="16">
+        </div>
       </div>
-      <p>
-        <a href="https://www.canva.com/design/DAG19rSXH8Y/xRJu3TwZ7jbox5F2It-lwA/view?utm_content=DAG19rSXH8Y&utm_campaign=designshare&utm_medium=embeds&utm_source=link" target="_blank" rel="noopener">CALCULADORA DE MARGENES</a> de Carezza Creaciones
-      </p>
-      <!-- Canva embed END -->
 
-      <div>
-        <a id="cta-open-2" class="cta secondary" target="_blank" rel="noopener">Abrir Calculadora en pestaña nueva</a>
+      <div class="out" id="outPills"></div>
+
+      <div class="callout" id="callout">Introduce valores para ver las instrucciones de centrado.</div>
+
+      <div style="margin-top:18px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+        <button class="btn primary" id="copy">Copiar instrucciones</button>
+        <button class="btn ghost" id="reset">Restablecer</button>
       </div>
-    </section>
-    <footer>© Carezza Creaciones — Sitio shell con Canva + enlace a GitHub Pages</footer>
+    </div>
+
+    <footer>
+      Consejo: si <em>inicio = fin</em>, ya estás centrada.
+    </footer>
   </div>
 
-  <script>
-    // 👉 Cambia esta URL por tu URL real de GitHub Pages:
-    const APP_URL = " https://carezzacreaciones-cloud.github.io/calculadora-anillado/"; // TODO: reemplaza
+<script>
+(function(){
+  const $ = s=>document.querySelector(s);
+  const inicio = $('#inicio');
+  const fin = $('#fin');
+  const outPills = $('#outPills');
+  const callout = $('#callout');
 
-    const a1 = document.getElementById("cta-open");
-    const a2 = document.getElementById("cta-open-2");
-    a1.href = APP_URL;
-    a2.href = APP_URL;
-  </script>
+  function round2(n){return Math.round((n + Number.EPSILON)*100)/100}
+
+  function recalc(){
+    const i = parseFloat(inicio.value)||0;
+    const f = parseFloat(fin.value)||0;
+    const total = i + f;
+    const mitad = total/2;
+    const delta = Math.abs(f - i)/2;
+
+    outPills.innerHTML = '';
+    addPill(`Total márgenes: ${round2(total)} mm`);
+    addPill(`Mitad ideal: ${round2(mitad)} mm`);
+    addPill(delta===0?`Ajuste: 0 mm (ya centrado)`:`Ajuste: ${round2(delta)} mm`, delta===0?'ok':'warn');
+
+    if(delta===0){
+      callout.textContent = `Perfecto: márgenes iguales, no necesitas mover.`;
+    } else {
+      callout.textContent = `Debes mover de derecha a izquierda ${round2(delta)} mm.`;
+    }
+  }
+
+  function addPill(txt,variant){
+    const el=document.createElement('div');
+    el.className='pill'+(variant?' '+variant:'');
+    el.textContent=txt;
+    outPills.appendChild(el);
+  }
+
+  ['input','change'].forEach(ev=>{
+    inicio.addEventListener(ev,recalc);
+    fin.addEventListener(ev,recalc);
+  });
+
+  $('#reset').addEventListener('click',()=>{
+    inicio.value=10; fin.value=16; recalc();
+  });
+
+  $('#copy').addEventListener('click',()=>{
+    const txt = callout.textContent.trim();
+    navigator.clipboard.writeText(txt).then(()=>{
+      const old=$('#copy').textContent;
+      $('#copy').textContent='¡Copiado!';
+      setTimeout(()=>$('#copy').textContent=old,1200);
+    });
+  });
+
+  recalc();
+})();
+</script>
 </body>
 </html>
