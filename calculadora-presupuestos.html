@@ -1,15 +1,167 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Calculadora de Presupuestos — Carezza</title>
-  <meta name="description" content="Cotizador simple con ítems, IVA y totales."/>
-  <meta name="theme-color" content="#b5a7cb" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;800&display=swap" rel="stylesheet">
-  <style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ 
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --primary: #b5a7cb;
+            --secondary: #f8dcc0;
+        }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #faf7f5;
+        }
+        
+        .bg-primary {
+            background-color: var(--primary);
+        }
+        
+        .bg-secondary {
+            background-color: var(--secondary);
+        }
+        
+        .text-primary {
+            color: var(--primary);
+        }
+        
+        .text-secondary {
+            color: var(--secondary);
+        }
+        
+        .border-primary {
+            border-color: var(--primary);
+        }
+        
+        .border-secondary {
+            border-color: var(--secondary);
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background-color: #a093b7;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(181, 167, 203, 0.3);
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary);
+            color: #5a4d6e;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #f0d0b0;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(248, 220, 192, 0.3);
+        }
+        
+        .card {
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+        
+        table {
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        
+        th, td {
+            padding: 12px 16px;
+        }
+        
+        th {
+            background-color: var(--primary);
+            color: white;
+            font-weight: 600;
+        }
+        
+        th:first-child {
+            border-top-left-radius: 8px;
+        }
+        
+        th:last-child {
+            border-top-right-radius: 8px;
+        }
+        
+        tr:nth-child(even) {
+            background-color: rgba(181, 167, 203, 0.1);
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        input, select {
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 8px 12px;
+            transition: all 0.3s ease;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(181, 167, 203, 0.3);
+        }
+        
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        
+        .copy-animation {
+            animation: copyFeedback 1.5s ease-in-out;
+        }
+        
+        @keyframes copyFeedback {
+            0%, 100% { background-color: transparent; }
+            50% { background-color: rgba(181, 167, 203, 0.2); }
+        }
+        
+        .report-container {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            background-color: #fff;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .copy-success {
+            background-color: #10B981 !important;
+        }
+        
+        .copy-success:hover {
+            background-color: #059669 !important;
+        }
+    </style>
+    
+    <style>
     :root{
       --lav:#b5a7cb; --beige:#f8dcc0; --ink:#1f2937; --muted:#6b7280; --bg:#fffaf6; --card:#ffffff;
       --radius:22px; --shadow:0 18px 45px rgba(31,41,55,.08);
@@ -33,9 +185,26 @@
     .shopbtn{display:inline-flex;align-items:center;gap:10px;background:var(--lav);color:#fff;border-radius:999px;padding:12px 18px;font-weight:800;text-decoration:none}
     .shopbtn:hover{opacity:.95}
   </style>
-</head>
-<body>
-<div class="wrap">
+  
+  <style>
+    :root{--lav:#b5a7cb;--beige:#f8dcc0;--ink:#333;--bg:#f9f7f5}
+    *{box-sizing:border-box}body{font-family:Arial,system-ui; background:var(--bg); margin:0; padding:20px; color:var(--ink)}
+    .container{max-width:1100px;margin:0 auto;background:#fff;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,.08);overflow:hidden}
+    .header{background:linear-gradient(90deg,var(--lav),var(--beige));padding:16px 20px}
+    .header h1{margin:0;font-size:22px}.header p{margin:4px 0 0;opacity:.9}
+    .content{padding:18px}.row{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;margin-bottom:10px}
+    button{border:0;border-radius:8px;padding:10px 14px;cursor:pointer;font-weight:700}
+    .p{background:var(--lav);color:#fff}.s{background:var(--beige)}.g{background:transparent;border:1px dashed #ddd}
+    table{width:100%;border-collapse:collapse}th{background:var(--lav);color:#fff;text-align:left;padding:10px}td{padding:8px;border-bottom:1px solid #eee}
+    input[type=text],input[type=number]{width:100%;padding:8px;border:1px solid #ddd;border-radius:6px}
+    .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;background:rgba(181,167,203,.1);padding:12px;border-radius:10px;margin-bottom:16px}
+    .res{background:rgba(248,220,192,.22);padding:14px;border-radius:10px}
+    .resg{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+    .card{background:#fff;border:1px solid var(--lav);border-radius:8px;padding:10px}
+    .full{grid-column:1/-1;background:rgba(248,220,192,.3)}
+    .note{position:fixed;top:16px;right:16px;background:#4CAF50;color:#fff;padding:10px 12px;border-radius:8px;display:none}
+    @media(max-width:900px){.grid{grid-template-columns:1fr 1fr}.resg{grid-template-columns:1fr}}
+  </style>
   <header>
     <div class="brand">
       <div class="logo" aria-hidden="true"></div>
@@ -46,120 +215,643 @@
       <a id="link-tienda" class="btn shop" target="_blank" rel="noopener">Ir a la Tienda</a>
     </nav>
   </header>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="header"><h1>Calculadora de Presupuestos</h1><p></div>            
 
-  <section class="hero">
-    <h2>Calculadora de Presupuestos / Cotizaciones</h2>
-    <p>Agrega ítems, cantidades y precios. Calculamos subtotales, IVA (19%) y total. Copia o exporta.</p>
-  </section>
-  <style>
-    .card{background:#fff;border-radius:22px;box-shadow:0 18px 45px rgba(31,41,55,.08);padding:20px}
-    table{width:100%;border-collapse:collapse}
-    th,td{padding:10px;border-bottom:1px solid #eee;text-align:left}
-    th{background:#fafafa}
-    input[type=text], input[type=number]{width:100%;padding:8px;border:1px solid #e5e7eb;border-radius:10px}
-    .controls{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
-    .btn{border:none;border-radius:10px;padding:10px 14px;font-weight:800;cursor:pointer}
-    .btn.primary{background:#b5a7cb;color:#fff}
-    .btn.ghost{background:transparent;border:1px dashed #d1d5db;color:#374151}
-    .totals{display:grid;gap:6px;justify-content:end;margin-top:12px}
-    .totals div{display:flex;gap:12px;align-items:center}
-    .totals label{min-width:120px;text-align:right;font-weight:700}
-    .right{text-align:right}
-  </style>
-  <div class="card">
-    <div class="controls">
-      <button id="addRow" class="btn primary">+ Agregar ítem</button>
-      <button id="copy" class="btn ghost">Copiar resumen</button>
-      <button id="csv" class="btn ghost">Descargar CSV</button>
+    <div class="min-h-screen flex flex-col">
+      
+        
+        <!-- Main Content -->
+        <main class="flex-grow container mx-auto px-4 py-8">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Form Section -->
+                <div class="lg:col-span-1">
+                    <div class="card bg-white p-6">
+                        <h2 class="text-xl font-semibold mb-6 text-gray-800 border-b pb-2 border-secondary">Agregar Ítem</h2>
+                        
+                        <form id="itemForm" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Tipo</label>
+                                <select id="itemType" class="w-full">
+                                    <option value="producto">Producto</option>
+                                    <option value="servicio">Servicio</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
+                                <input type="text" id="itemDescription" class="w-full" placeholder="Nombre del producto o servicio">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Cantidad</label>
+                                <input type="number" id="itemQuantity" class="w-full" min="1" value="1">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Precio Unitario</label>
+                                <div class="relative">
+                                    <span class="absolute left-3 top-2 text-gray-500">$</span>
+                                    <input type="number" id="itemPrice" class="w-full pl-8" placeholder="0">
+                                </div>
+                            </div>
+                            
+                            <div class="pt-2">
+                                <button type="submit" class="btn-primary w-full py-2 px-4 rounded-md font-medium">
+                                    Agregar al Presupuesto
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div class="card bg-white p-6 mt-6">
+                        <h2 class="text-xl font-semibold mb-4 text-gray-800 border-b pb-2 border-secondary">Datos del Cliente</h2>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
+                                <input type="text" id="clientName" class="w-full" placeholder="Nombre del cliente">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Apellido</label>
+                                <input type="text" id="clientLastName" class="w-full" placeholder="Apellido del cliente">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
+                                <input type="tel" id="clientPhone" class="w-full" placeholder="Número de teléfono">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Correo</label>
+                                <input type="email" id="clientEmail" class="w-full" placeholder="correo@ejemplo.com">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Results Section -->
+                <div class="lg:col-span-2">
+                    <div class="card bg-white p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-xl font-semibold text-gray-800">Presupuesto</h2>
+                            <button id="visualizeButton" class="btn-primary py-2 px-4 rounded-md font-medium hidden">
+                                Visualizar Presupuesto
+                            </button>
+                        </div>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead>
+                                    <tr>
+                                        <th class="text-left">Descripción</th>
+                                        <th class="text-center">Tipo</th>
+                                        <th class="text-center">Cantidad</th>
+                                        <th class="text-right">Precio Unit.</th>
+                                        <th class="text-right">Subtotal</th>
+                                        <th class="text-center">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="itemsTable">
+                                    <!-- Items will be added here dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div id="emptyState" class="py-8 text-center text-gray-500">
+                            <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                                </svg>
+                            </div>
+                            <p class="text-lg">No hay ítems en el presupuesto</p>
+                            <p class="text-sm">Agrega productos o servicios para comenzar</p>
+                        </div>
+                        
+                        <div id="summarySection" class="mt-6 border-t border-gray-200 pt-4 hidden">
+                            <div class="bg-secondary bg-opacity-20 p-4 rounded-lg">
+                                <h3 class="font-semibold text-gray-700 mb-2 text-center">Total del Presupuesto</h3>
+                                <div class="space-y-2">
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600">Subtotal:</span>
+                                        <span id="subtotal" class="font-medium">$0</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600">IVA (19%):</span>
+                                        <span id="taxAmount" class="font-medium">$0</span>
+                                    </div>
+                                    <div class="flex justify-between pt-2 border-t border-secondary">
+                                        <span class="text-gray-800 font-semibold">Total:</span>
+                                        <span id="finalPrice" class="text-xl font-bold text-primary">$0</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Detailed Report Section -->
+                    <div id="reportSection" class="card bg-white p-6 mt-6 hidden">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-xl font-semibold text-gray-800">Reporte Detallado</h2>
+                            <button id="copyButton" class="btn-primary py-2 px-4 rounded-md font-medium flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                                </svg>
+                                <span id="copyButtonText">Copiar Reporte</span>
+                            </button>
+                        </div>
+                        
+                        <div class="report-container p-4" id="reportContent">
+                            <!-- Report content will be generated here -->
+                        </div>
+                        
+                        <!-- Visible textarea for copying -->
+                        <div id="textareaContainer" class="mt-4 hidden">
+                            <p class="text-sm text-gray-600 mb-2">Selecciona todo el texto y cópialo manualmente:</p>
+                            <textarea id="reportTextarea" class="w-full h-32 p-2 border border-gray-300 rounded" readonly></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Modal para visualizar presupuesto -->
+        <div id="budgetModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+            <div class="flex items-center justify-center min-h-screen p-4">
+                <div class="bg-white rounded-lg max-w-4xl w-full max-h-screen overflow-y-auto">
+                    <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                        <h3 class="text-lg font-semibold">Presupuesto - Vista Previa</h3>
+                        <button id="closeModal" class="text-gray-500 hover:text-gray-700">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div id="budgetPreview" class="p-6">
+                        <!-- Contenido del presupuesto se generará aquí -->
+                    </div>
+                    <div class="p-6 border-t border-gray-200">
+                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                            <div class="flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <div class="text-sm text-blue-700">
+                                    <p class="font-medium">Para descargar como PDF:</p>
+                                    <p><strong>Windows:</strong> Presiona Ctrl + P | <strong>Mac:</strong> Presiona Cmd + P</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex justify-end">
+                            <button id="closeModalBtn" class="bg-gray-200 text-gray-700 py-2 px-4 rounded-md font-medium hover:bg-gray-300">
+                                Cerrar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <footer class="bg-white border-t border-gray-200 mt-8">
+            <div class="container mx-auto px-4 py-6">
+                <div class="text-center text-gray-600 text-sm">
+                    © 2023 Carezza Creaciones - Calculadora de Presupuestos
+                </div>
+            </div>
+        </footer>
     </div>
-    <table id="tbl">
-      <thead>
-        <tr>
-          <th style="width:44%">Descripción</th>
-          <th style="width:14%">Cant.</th>
-          <th style="width:18%">P. Unitario</th>
-          <th style="width:18%">Subtotal</th>
-          <th style="width:6%"></th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-    <div class="totals">
-      <div><label>Subtotal</label><div id="t_sub" class="right">$ 0</div></div>
-      <div><label>IVA (19%)</label><div id="t_iva" class="right">$ 0</div></div>
-      <div><label>Total</label><div id="t_tot" class="right"><strong>$ 0</strong></div></div>
-    </div>
-  </div>
-  <script>
-    (function(){
-      const tbody = document.querySelector('#tbl tbody');
-      const fmt = n => new Intl.NumberFormat('es-CL',{style:'currency',currency:'CLP',maximumFractionDigits:0}).format(n||0);
-      function addRow(desc='', qty=1, price=0){
-        const tr = document.createElement('tr');
-        tr.innerHTML = \`
-          <td><input type="text" value="\${desc}" placeholder="Descripción del ítem"></td>
-          <td><input type="number" min="0" step="1" value="\${qty}"></td>
-          <td><input type="number" min="0" step="10" value="\${price}"></td>
-          <td class="right subtotal">$ 0</td>
-          <td><button class="btn ghost del">✕</button></td>
-        \`;
-        tbody.appendChild(tr);
-        tr.querySelectorAll('input').forEach(i=> i.addEventListener('input', recalc));
-        tr.querySelector('.del').addEventListener('click', ()=>{ tr.remove(); recalc(); });
-        recalc();
-      }
-      function recalc(){
-        let sub=0;
-        tbody.querySelectorAll('tr').forEach(tr=>{
-          const qty = parseFloat(tr.children[1].querySelector('input').value)||0;
-          const price = parseFloat(tr.children[2].querySelector('input').value)||0;
-          const s = qty * price;
-          sub += s;
-          tr.querySelector('.subtotal').textContent = fmt(s);
-        });
-        const iva = sub * 0.19;
-        const tot = sub + iva;
-        document.getElementById('t_sub').textContent = fmt(sub);
-        document.getElementById('t_iva').textContent = fmt(iva);
-        document.getElementById('t_tot').textContent = fmt(tot);
-      }
-      function toCSV(){
-        const head = ['Descripcion','Cantidad','PrecioUnitario','Subtotal'];
-        const lines = [head.join(',')];
-        tbody.querySelectorAll('tr').forEach(tr=>{
-          const d = tr.children[0].querySelector('input').value.replace(/,/g,' ');
-          const q = tr.children[1].querySelector('input').value||'0';
-          const p = tr.children[2].querySelector('input').value||'0';
-          const s = (parseFloat(q)||0)*(parseFloat(p)||0);
-          lines.push([d,q,p,s].join(','));
-        });
-        return lines.join('\n');
-      }
-      document.getElementById('addRow').addEventListener('click', ()=> addRow());
-      document.getElementById('copy').addEventListener('click', ()=>{
-        const sub = document.getElementById('t_sub').textContent;
-        const iva = document.getElementById('t_iva').textContent;
-        const tot = document.getElementById('t_tot').textContent;
-        const txt = \`Resumen de cotización — Subtotal: \${sub}, IVA: \${iva}, Total: \${tot}\`;
-        navigator.clipboard.writeText(txt);
-      });
-      document.getElementById('csv').addEventListener('click', ()=>{
-        const blob = new Blob([toCSV()],{type:'text/csv;charset=utf-8;'});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url; a.download = 'cotizacion.csv'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
-      });
-      addRow('Servicio/Producto', 1, 10000);
-    })();
-  </script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elements
+            const itemForm = document.getElementById('itemForm');
+            const itemsTable = document.getElementById('itemsTable');
+            const emptyState = document.getElementById('emptyState');
+            const summarySection = document.getElementById('summarySection');
+            const reportSection = document.getElementById('reportSection');
+            const reportContent = document.getElementById('reportContent');
+            const copyButton = document.getElementById('copyButton');
+            const copyButtonText = document.getElementById('copyButtonText');
+            const textareaContainer = document.getElementById('textareaContainer');
+            const reportTextarea = document.getElementById('reportTextarea');
+            const visualizeButton = document.getElementById('visualizeButton');
+            const budgetModal = document.getElementById('budgetModal');
+            const budgetPreview = document.getElementById('budgetPreview');
+            const closeModal = document.getElementById('closeModal');
+            const closeModalBtn = document.getElementById('closeModalBtn');
 
-  <footer>© Carezza Creaciones — Herramientas gratuitas para organizar y crear. Hecho con amor 💜</footer>
-</div>
-<script>
-  const URL_TIENDA = "https://tu-tienda.tiendanube.com";
-  const UTM = "?utm_source=portal_herramientas&utm_medium=referral&utm_campaign=trafico_tienda";
-  const link = document.getElementById("link-tienda");
-  if (link) link.href = URL_TIENDA + UTM;
-</script>
-</body>
+            
+            // Client data elements
+            const clientName = document.getElementById('clientName');
+            const clientLastName = document.getElementById('clientLastName');
+            const clientPhone = document.getElementById('clientPhone');
+            const clientEmail = document.getElementById('clientEmail');
+            
+            // Items array
+            let items = [];
+            
+            // Format currency
+            function formatCurrency(amount) {
+                return new Intl.NumberFormat('es-CL', { 
+                    style: 'currency', 
+                    currency: 'CLP',
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0
+                }).format(amount);
+            }
+            
+            // Generate detailed report
+            function generateReport() {
+                if (items.length === 0) {
+                    reportSection.classList.add('hidden');
+                    return;
+                }
+                
+                // Calculate totals
+                const subtotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                const taxAmount = subtotal * 0.19;
+                const total = subtotal + taxAmount;
+                const currentDate = new Date().toLocaleDateString('es-ES');
+                
+                let reportHTML = `
+                    <div class="text-center mb-4">
+                        <h3 class="text-lg font-bold">PRESUPUESTO - CAREZZA CREACIONES</h3>
+                        <p class="text-sm text-gray-600">Fecha: ${currentDate}</p>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h4 class="font-semibold mb-2">DETALLE DE ÍTEMS:</h4>
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="border-b border-gray-300">
+                                    <th class="text-left py-2">Descripción</th>
+                                    <th class="text-center py-2">Tipo</th>
+                                    <th class="text-center py-2">Cantidad</th>
+                                    <th class="text-right py-2">Precio Unit.</th>
+                                    <th class="text-right py-2">Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+                
+                items.forEach(item => {
+                    const itemSubtotal = item.price * item.quantity;
+                    reportHTML += `
+                        <tr class="border-b border-gray-200">
+                            <td class="py-2">${item.description}</td>
+                            <td class="text-center py-2">${item.type === 'producto' ? 'Producto' : 'Servicio'}</td>
+                            <td class="text-center py-2">${item.quantity}</td>
+                            <td class="text-right py-2">${formatCurrency(item.price)}</td>
+                            <td class="text-right py-2">${formatCurrency(itemSubtotal)}</td>
+                        </tr>
+                    `;
+                });
+                
+                reportHTML += `
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="border-t border-gray-300 pt-4">
+                        <div class="space-y-2">
+                            <div class="flex justify-between">
+                                <span>Subtotal:</span>
+                                <span>${formatCurrency(subtotal)}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>IVA (19%):</span>
+                                <span>${formatCurrency(taxAmount)}</span>
+                            </div>
+                            <div class="flex justify-between font-bold text-lg border-t border-gray-300 pt-2">
+                                <span>TOTAL:</span>
+                                <span>${formatCurrency(total)}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4 pt-4 border-t border-gray-300 text-sm text-gray-600">
+                        <p class="font-semibold mb-2">INFORMACIÓN IMPORTANTE:</p>
+                        <p class="mb-1">• Este presupuesto tiene una validez de 15 días a partir de la fecha de emisión.</p>
+                        <p class="mb-1">• Para confirmar su pedido y asegurar este presupuesto, debe ponerse en contacto con los dueños del emprendimiento.</p>
+                        <p class="mb-1">• Los precios están sujetos a cambios sin previo aviso una vez vencida la validez.</p>
+                        <p class="mt-3 text-center font-medium">Presupuesto generado por Carezza Creaciones</p>
+                    </div>
+                `;
+                
+                reportContent.innerHTML = reportHTML;
+                reportSection.classList.remove('hidden');
+                
+                // Create text version for textarea
+                let reportText = `PRESUPUESTO - CAREZZA CREACIONES\n`;
+                reportText += `Fecha: ${currentDate}\n\n`;
+                reportText += `DETALLE DE ÍTEMS:\n`;
+                reportText += `${'Descripción'.padEnd(30)} | ${'Tipo'.padEnd(10)} | ${'Cant.'.padEnd(5)} | ${'Precio Unit.'.padEnd(15)} | ${'Subtotal'.padEnd(15)}\n`;
+                reportText += `${'-'.repeat(85)}\n`;
+                
+                items.forEach(item => {
+                    const itemSubtotal = item.price * item.quantity;
+                    const itemType = item.type === 'producto' ? 'Producto' : 'Servicio';
+                    reportText += `${item.description.padEnd(30)} | ${itemType.padEnd(10)} | ${String(item.quantity).padEnd(5)} | ${formatCurrency(item.price).padEnd(15)} | ${formatCurrency(itemSubtotal).padEnd(15)}\n`;
+                });
+                
+                reportText += `\nSubtotal: ${formatCurrency(subtotal)}\n`;
+                reportText += `IVA (19%): ${formatCurrency(taxAmount)}\n`;
+                reportText += `TOTAL: ${formatCurrency(total)}\n\n`;
+                reportText += `INFORMACIÓN IMPORTANTE:\n`;
+                reportText += `• Este presupuesto tiene una validez de 15 días a partir de la fecha de emisión.\n`;
+                reportText += `• Para confirmar su pedido y asegurar este presupuesto, debe ponerse en contacto con los dueños del emprendimiento.\n`;
+                reportText += `• Los precios están sujetos a cambios sin previo aviso una vez vencida la validez.\n\n`;
+                reportText += `Presupuesto generado por Carezza Creaciones`;
+                
+                // Update textarea with report text
+                reportTextarea.value = reportText;
+            }
+            
+            // Update summary
+            function updateSummary() {
+                // Calculate totals
+                const subtotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                const taxAmount = subtotal * 0.19;
+                const total = subtotal + taxAmount;
+                
+                // Update display
+                document.getElementById('subtotal').textContent = formatCurrency(subtotal);
+                document.getElementById('taxAmount').textContent = formatCurrency(taxAmount);
+                document.getElementById('finalPrice').textContent = formatCurrency(total);
+                
+                // Show/hide sections
+                if (items.length > 0) {
+                    emptyState.classList.add('hidden');
+                    summarySection.classList.remove('hidden');
+                    visualizeButton.classList.remove('hidden');
+                    generateReport();
+                } else {
+                    emptyState.classList.remove('hidden');
+                    summarySection.classList.add('hidden');
+                    visualizeButton.classList.add('hidden');
+                    reportSection.classList.add('hidden');
+                    
+                    // Reset copy button state
+                    copyButton.classList.remove('copy-success');
+                    copyButtonText.textContent = 'Copiar Reporte';
+                    textareaContainer.classList.add('hidden');
+                    copyAttempted = false;
+                }
+            }
+            
+            // Render items table
+            function renderItems() {
+                itemsTable.innerHTML = '';
+                
+                items.forEach((item, index) => {
+                    const subtotal = item.price * item.quantity;
+                    
+                    const row = document.createElement('tr');
+                    row.className = 'animate-fade-in';
+                    row.innerHTML = `
+                        <td class="py-3">${item.description}</td>
+                        <td class="text-center py-3">
+                            <span class="px-2 py-1 rounded-full text-xs ${item.type === 'producto' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}">
+                                ${item.type === 'producto' ? 'Producto' : 'Servicio'}
+                            </span>
+                        </td>
+                        <td class="text-center py-3">${item.quantity}</td>
+                        <td class="text-right py-3">${formatCurrency(item.price)}</td>
+                        <td class="text-right py-3 font-medium">${formatCurrency(subtotal)}</td>
+                        <td class="text-center py-3">
+                            <button class="text-red-500 hover:text-red-700 transition" data-index="${index}">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                            </button>
+                        </td>
+                    `;
+                    
+                    itemsTable.appendChild(row);
+                });
+                
+                updateSummary();
+            }
+            
+            // Add item
+            itemForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const description = document.getElementById('itemDescription').value.trim();
+                const type = document.getElementById('itemType').value;
+                const quantity = parseInt(document.getElementById('itemQuantity').value);
+                const price = parseFloat(document.getElementById('itemPrice').value);
+                
+                if (!description || isNaN(quantity) || isNaN(price) || price <= 0 || quantity <= 0) {
+                    alert('Por favor completa todos los campos correctamente.');
+                    return;
+                }
+                
+                items.push({
+                    description,
+                    type,
+                    quantity,
+                    price
+                });
+                
+                // Reset form
+                document.getElementById('itemDescription').value = '';
+                document.getElementById('itemPrice').value = '';
+                document.getElementById('itemQuantity').value = '1';
+                document.getElementById('itemDescription').focus();
+                
+                renderItems();
+            });
+            
+            // Remove item
+            itemsTable.addEventListener('click', function(e) {
+                if (e.target.closest('button')) {
+                    const button = e.target.closest('button');
+                    const index = parseInt(button.dataset.index);
+                    
+                    items.splice(index, 1);
+                    renderItems();
+                }
+            });
+            
+            // Copy button - toggle between showing textarea and trying to copy
+            let copyAttempted = false;
+            
+            copyButton.addEventListener('click', function() {
+                if (!copyAttempted) {
+                    // First click - try to copy automatically
+                    try {
+                        // Try the modern clipboard API
+                        navigator.clipboard.writeText(reportTextarea.value)
+                            .then(() => {
+                                // Success!
+                                copyButton.classList.add('copy-success');
+                                copyButtonText.textContent = '¡Copiado!';
+                                
+                                setTimeout(() => {
+                                    copyButton.classList.remove('copy-success');
+                                    copyButtonText.textContent = 'Copiar Reporte';
+                                }, 2000);
+                            })
+                            .catch(() => {
+                                // Failed, show textarea
+                                showTextarea();
+                            });
+                    } catch (err) {
+                        // Browser doesn't support clipboard API, show textarea
+                        showTextarea();
+                    }
+                    
+                    copyAttempted = true;
+                } else {
+                    // Second click - just show textarea
+                    showTextarea();
+                }
+            });
+            
+            function showTextarea() {
+                textareaContainer.classList.remove('hidden');
+                reportTextarea.focus();
+                reportTextarea.select();
+                copyButtonText.textContent = 'Selecciona y copia el texto';
+            }
+            
+            // Generate budget preview for modal
+            function generateBudgetPreview() {
+                const subtotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                const taxAmount = subtotal * 0.19;
+                const total = subtotal + taxAmount;
+                const currentDate = new Date().toLocaleDateString('es-ES');
+                
+                const clientFullName = `${clientName.value.trim()} ${clientLastName.value.trim()}`.trim();
+                
+                let previewHTML = `
+                    <style>
+                        @media print {
+                            body * { visibility: hidden; }
+                            #budgetPreview, #budgetPreview * { visibility: visible; }
+                            #budgetPreview { position: absolute; left: 0; top: 0; width: 100%; }
+                            .no-print { display: none !important; }
+                        }
+                    </style>
+                    <div class="max-w-4xl mx-auto bg-white">
+                        <div class="text-center mb-8">
+                            <div class="flex items-center justify-center mb-4">
+                                <div class="w-12 h-12 rounded-full bg-primary flex items-center justify-center mr-4">
+                                    <span class="text-white font-bold text-2xl">C</span>
+                                </div>
+                                <h1 class="text-3xl font-bold text-gray-800">Carezza Creaciones</h1>
+                            </div>
+                            <h2 class="text-xl font-semibold text-gray-600">PRESUPUESTO</h2>
+                            <p class="text-gray-500">Fecha: ${currentDate}</p>
+                        </div>
+                        
+                        ${clientFullName || clientPhone.value.trim() || clientEmail.value.trim() ? `
+                        <div class="mb-6 p-4 bg-gray-50 rounded-lg">
+                            <h3 class="font-semibold text-gray-700 mb-2">Datos del Cliente:</h3>
+                            ${clientFullName ? `<p><strong>Nombre:</strong> ${clientFullName}</p>` : ''}
+                            ${clientPhone.value.trim() ? `<p><strong>Teléfono:</strong> ${clientPhone.value.trim()}</p>` : ''}
+                            ${clientEmail.value.trim() ? `<p><strong>Correo:</strong> ${clientEmail.value.trim()}</p>` : ''}
+                        </div>
+                        ` : ''}
+                        
+                        <div class="mb-6">
+                            <h3 class="font-semibold text-gray-700 mb-4">Detalle de Ítems:</h3>
+                            <table class="w-full border-collapse border border-gray-300">
+                                <thead>
+                                    <tr class="bg-primary text-white">
+                                        <th class="border border-gray-300 px-4 py-2 text-left">Descripción</th>
+                                        <th class="border border-gray-300 px-4 py-2 text-center">Tipo</th>
+                                        <th class="border border-gray-300 px-4 py-2 text-center">Cantidad</th>
+                                        <th class="border border-gray-300 px-4 py-2 text-right">Precio Unit.</th>
+                                        <th class="border border-gray-300 px-4 py-2 text-right">Subtotal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                `;
+                
+                items.forEach((item, index) => {
+                    const itemSubtotal = item.price * item.quantity;
+                    const rowClass = index % 2 === 0 ? 'bg-white' : 'bg-gray-50';
+                    previewHTML += `
+                        <tr class="${rowClass}">
+                            <td class="border border-gray-300 px-4 py-2">${item.description}</td>
+                            <td class="border border-gray-300 px-4 py-2 text-center">${item.type === 'producto' ? 'Producto' : 'Servicio'}</td>
+                            <td class="border border-gray-300 px-4 py-2 text-center">${item.quantity}</td>
+                            <td class="border border-gray-300 px-4 py-2 text-right">${formatCurrency(item.price)}</td>
+                            <td class="border border-gray-300 px-4 py-2 text-right font-medium">${formatCurrency(itemSubtotal)}</td>
+                        </tr>
+                    `;
+                });
+                
+                previewHTML += `
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="flex justify-end mb-6">
+                            <div class="bg-secondary bg-opacity-20 p-4 rounded-lg">
+                                <div class="space-y-2">
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-700">Subtotal:</span>
+                                        <span class="font-medium">${formatCurrency(subtotal)}</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-700">IVA (19%):</span>
+                                        <span class="font-medium">${formatCurrency(taxAmount)}</span>
+                                    </div>
+                                    <div class="flex justify-between items-center border-t border-secondary pt-2">
+                                        <span class="text-xl font-bold text-gray-800">TOTAL:</span>
+                                        <span class="text-2xl font-bold text-primary ml-8">${formatCurrency(total)}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-sm text-gray-600 border-t border-gray-200 pt-4">
+                            <p class="font-semibold mb-2">INFORMACIÓN IMPORTANTE:</p>
+                            <p class="mb-1">• Este presupuesto tiene una validez de 15 días a partir de la fecha de emisión.</p>
+                            <p class="mb-1">• Para confirmar su pedido y asegurar este presupuesto, debe ponerse en contacto con los dueños del emprendimiento.</p>
+                            <p class="mb-1">• Los precios están sujetos a cambios sin previo aviso una vez vencida la validez.</p>
+                            <p class="mt-3 text-center font-medium">Presupuesto generado por Carezza Creaciones</p>
+                        </div>
+                    </div>
+                `;
+                
+                budgetPreview.innerHTML = previewHTML;
+            }
+            
+            // Modal event listeners
+            visualizeButton.addEventListener('click', function() {
+                generateBudgetPreview();
+                budgetModal.classList.remove('hidden');
+            });
+            
+            closeModal.addEventListener('click', function() {
+                budgetModal.classList.add('hidden');
+            });
+            
+            closeModalBtn.addEventListener('click', function() {
+                budgetModal.classList.add('hidden');
+            });
+            
+
+            
+            // Close modal when clicking outside
+            budgetModal.addEventListener('click', function(e) {
+                if (e.target === budgetModal) {
+                    budgetModal.classList.add('hidden');
+                }
+            });
+            
+            // Initialize
+            renderItems();
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98f9a90c441688b1',t:'MTc2MDYzOTc3MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
