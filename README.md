@@ -1,4 +1,4 @@
-# Carezza — Calculadora de Anillado (Shell Canva + GitHub Pages)
+# Carezza — Calculadora de Anillado (Shell Canva + GitHub Pages) Ana
 
 Este es un *shell* HTML minimalista que:
 - Muestra tu diseño de **Canva** incrustado (como vista previa).
