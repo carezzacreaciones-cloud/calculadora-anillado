@@ -1,16 +1,17 @@
-# Carezza — Calculadora de Anillado (Shell Canva + GitHub Pages) Ana
+# Carezza — Centro de Herramientas (Opción 1: un solo repo)
 
-Este es un *shell* HTML minimalista que:
-- Muestra tu diseño de **Canva** incrustado (como vista previa).
-- Incluye un botón **Abrir Calculadora** que lleva a tu app funcional alojada en **GitHub Pages**.
+Este proyecto contiene **un portal** (`index.html`) y **tres páginas**:
+- `calculadora-presupuestos.html`
+- `calculadora-anillado.html`
+- `calculadora-costos.html`
 
-## Cómo usar
-1. Edita `index.html` y reemplaza la constante `APP_URL` por el enlace público de tu app, por ejemplo:
-   ```js
-   const APP_URL = "https://tuusuario.github.io/calculadora-anillado/";
-   ```
-2. Sube este archivo `index.html` a tu repositorio (puede ser el mismo de la app o uno distinto).
-3. Activa GitHub Pages para este repo (Branch: `main`, carpeta `/`).
-4. ¡Listo! Tu página mostrará el embed de Canva y el botón abrirá tu calculadora real.
+## Publicación en GitHub Pages
+1. Crea un repositorio (por ejemplo `carezza-herramientas`) y sube estos archivos a la **raíz**.
+2. Activa **Settings → Pages → Deploy from a branch → main → /(root)**.
+3. Abre la URL pública y navega entre las páginas.
 
-> Nota: Canva no permite ejecutar el HTML externo dentro de su propio dominio. Este *shell* mantiene tu estética y vincula a la app funcionando al 100%.
+## Personalización rápida
+- En todas las páginas, edita la constante `URL_TIENDA` en el `<script>` del pie de página para apuntar a tu TiendaNube.
+- Cambia textos, colores y añade tu logo real.
+
+Creado 2025-10-16.
