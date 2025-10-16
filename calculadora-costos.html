@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Calculadora de Costos — Carezza (v2)</title>
+  <meta name="description" content="Versión robusta: cálculos por unidad, IVA y margen."/>
+  <style>
+    :root{--lav:#b5a7cb;--beige:#f8dcc0;--ink:#333;--bg:#f9f7f5}
+    *{box-sizing:border-box}body{font-family:Arial,system-ui; background:var(--bg); margin:0; padding:20px; color:var(--ink)}
+    .container{max-width:1100px;margin:0 auto;background:#fff;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,.08);overflow:hidden}
+    .header{background:linear-gradient(90deg,var(--lav),var(--beige));padding:16px 20px}
+    .header h1{margin:0;font-size:22px}.header p{margin:4px 0 0;opacity:.9}
+    .content{padding:18px}.row{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;margin-bottom:10px}
+    button{border:0;border-radius:8px;padding:10px 14px;cursor:pointer;font-weight:700}
+    .p{background:var(--lav);color:#fff}.s{background:var(--beige)}.g{background:transparent;border:1px dashed #ddd}
+    table{width:100%;border-collapse:collapse}th{background:var(--lav);color:#fff;text-align:left;padding:10px}td{padding:8px;border-bottom:1px solid #eee}
+    input[type=text],input[type=number]{width:100%;padding:8px;border:1px solid #ddd;border-radius:6px}
+    .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;background:rgba(181,167,203,.1);padding:12px;border-radius:10px;margin-bottom:16px}
+    .res{background:rgba(248,220,192,.22);padding:14px;border-radius:10px}
+    .resg{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+    .card{background:#fff;border:1px solid var(--lav);border-radius:8px;padding:10px}
+    .full{grid-column:1/-1;background:rgba(248,220,192,.3)}
+    .note{position:fixed;top:16px;right:16px;background:#4CAF50;color:#fff;padding:10px 12px;border-radius:8px;display:none}
+    @media(max-width:900px){.grid{grid-template-columns:1fr 1fr}.resg{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<div id="note" class="note"></div>
+<div class="container" id="app">
+  <div class="header"><h1>Calculadora de Costos (v2)</h1><p>Versión robusta con inicialización segura.</p></div>
+  <div class="content">
+    <div class="row">
+      <button id="btnPDF" class="p">Reporte PDF</button>
+      <button id="btnSave" class="s">Guardar</button>
+      <button id="btnReset" class="g">Restablecer</button>
+    </div>
+    <div class="grid">
+      <div><label>Cantidad</label><input id="cantidad" type="number" min="1" step="1" value="10"></div>
+      <div><label>IVA (%)</label><input id="ivaPct" type="number" min="0" step="0.1" value="19"></div>
+      <div><label>Ganancia (%)</label><input id="ganPct" type="number" min="0" step="0.1" value="30"></div>
+      <div><label>Moneda</label><input id="moneda" type="text" value="CLP"></div>
+    </div>
+    <h3>Insumos Directos</h3>
+    <div style="text-align:right;margin-bottom:6px"><button id="addInsumo" class="p">+ Insumo</button></div>
+    <table><thead><tr><th>Nombre</th><th>Precio total</th><th>Cant. total</th><th>Unidad</th><th>Cant. usada</th><th>Costo</th><th></th></tr></thead>
+      <tbody id="tbodyInsumos">
+        <tr>
+          <td><input data-k="nombre" value="Papel"></td>
+          <td><input data-k="precioTotal" type="number" value="15000" step="100"></td>
+          <td><input data-k="cantidadTotal" type="number" value="100" min="1" step="1"></td>
+          <td><input data-k="unidad" value="hojas"></td>
+          <td><input data-k="cantidadUsada" type="number" value="50" min="0" step="1"></td>
+          <td><span class="cellCosto">7500.00</span></td>
+          <td><button class="del g">✕</button></td>
+        </tr>
+      </tbody>
+      <tfoot><tr><td colspan="5" style="text-align:right">Subtotal insumos (lote)</td><td><span id="subInsumos">7500.00</span></td><td></td></tr></tfoot>
+    </table>
+
+    <h3>Costos Indirectos</h3>
+    <div style="text-align:right;margin-bottom:6px"><button id="addCosto" class="p">+ Costo</button></div>
+    <table><thead><tr><th>Nombre</th><th>Precio periodo</th><th>Periodo (días)</th><th>Costo/día</th><th>Días usados</th><th>Total</th><th></th></tr></thead>
+      <tbody id="tbodyCostos">
+        <tr>
+          <td><input data-k="nombre" value="Electricidad"></td>
+          <td><input data-k="precioTotal" type="number" value="50000" step="100"></td>
+          <td><input data-k="periodo" type="number" value="30" min="1" step="1"></td>
+          <td><span class="cellCostoDia">1666.67</span></td>
+          <td><input data-k="cantidadUsada" type="number" value="1" min="0" step="1"></td>
+          <td><span class="cellTotalCosto">1666.67</span></td>
+          <td><button class="del g">✕</button></td>
+        </tr>
+      </tbody>
+      <tfoot><tr><td colspan="5" style="text-align:right">Subtotal indirectos (lote)</td><td><span id="subIndirectos">1666.67</span></td><td></td></tr></tfoot>
+    </table>
+
+    <div class="res">
+      <h3 style="margin:0 0 8px">Cálculo Final</h3>
+      <div class="resg">
+        <div class="card">Total Insumos / unidad: <strong style="float:right" id="vInsumoU">$7,500.00</strong></div>
+        <div class="card">Total Indirectos / unidad: <strong style="float:right" id="vIndU">$1,666.67</strong></div>
+        <div class="card">Costo Total / unidad: <strong style="float:right" id="vCU">$9,166.67</strong></div>
+        <div class="card">IVA (<span id="lblIVA">19</span>%): <strong style="float:right" id="vIVA">$1,741.67</strong></div>
+        <div class="card">Total con IVA: <strong style="float:right" id="vTIVA">$10,908.34</strong></div>
+        <div class="card full">Precio Final (ganancia <span id="lblGan">30</span>%): <strong style="float:right" id="vPF">$14,180.84</strong></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  // Guardas y utilidades
+  function $(s){return document.querySelector(s)}
+  function $all(s){return document.querySelectorAll(s)}
+  function fmt(n){try{return new Intl.NumberFormat('es-CL',{style:'currency',currency:'CLP',minimumFractionDigits:2,maximumFractionDigits:2}).format(isFinite(n)?n:0)}catch(e){return '$'+(Math.round((n||0)*100)/100).toFixed(2)}}
+  function r2(n){return Math.round((n+Number.EPSILON)*100)/100}
+
+  const KEY='carezza_costos_v2';
+  const els = {
+    note: $('#note'),
+    cantidad: $('#cantidad'), iva: $('#ivaPct'), gan: $('#ganPct'), moneda: $('#moneda'),
+    tbi: $('#tbodyInsumos'), tbc: $('#tbodyCostos'),
+    subI: $('#subInsumos'), subC: $('#subIndirectos'),
+    vInU: $('#vInsumoU'), vIndU: $('#vIndU'), vCU: $('#vCU'), vIVA: $('#vIVA'), vTIVA: $('#vTIVA'), vPF: $('#vPF'),
+    lblIVA: $('#lblIVA'), lblGan: $('#lblGan')
+  };
+
+  function notify(m){ if(!els.note) return; els.note.textContent=m; els.note.style.display='block'; setTimeout(()=>els.note.style.display='none',1800); }
+
+  function calcRowIn(tr){
+    const pT = parseFloat(tr.querySelector('[data-k="precioTotal"]')?.value||'0');
+    const cT = Math.max(1, parseFloat(tr.querySelector('[data-k="cantidadTotal"]')?.value||'1'));
+    const cU = Math.max(0, parseFloat(tr.querySelector('[data-k="cantidadUsada"]')?.value||'0'));
+    const cost = (pT/cT)*cU;
+    const cell = tr.querySelector('.cellCosto'); if(cell) cell.textContent = r2(cost).toFixed(2);
+    return cost;
+  }
+  function calcRowCo(tr){
+    const pT = parseFloat(tr.querySelector('[data-k="precioTotal"]')?.value||'0');
+    const per= Math.max(1, parseFloat(tr.querySelector('[data-k="periodo"]')?.value||'1'));
+    const use= Math.max(0, parseFloat(tr.querySelector('[data-k="cantidadUsada"]')?.value||'0'));
+    const cDia = pT/per, total=cDia*use;
+    const c1 = tr.querySelector('.cellCostoDia'); if(c1) c1.textContent = r2(cDia).toFixed(2);
+    const c2 = tr.querySelector('.cellTotalCosto'); if(c2) c2.textContent = r2(total).toFixed(2);
+    return total;
+  }
+
+  function recalc(){
+    if(!els.cantidad) return;
+    const cant = Math.max(1, parseFloat(els.cantidad.value||'1'));
+    const ivaP = Math.max(0, parseFloat(els.iva.value||'0'));
+    const ganP = Math.max(0, parseFloat(els.gan.value||'0'));
+
+    let subI=0; $all('#tbodyInsumos tr').forEach(tr=> subI += calcRowIn(tr)); if(els.subI) els.subI.textContent = r2(subI).toFixed(2);
+    let subC=0; $all('#tbodyCostos tr').forEach(tr=> subC += calcRowCo(tr)); if(els.subC) els.subC.textContent = r2(subC).toFixed(2);
+
+    const inU=subI/cant, indU=subC/cant, cU=inU+indU, iva=cU*(ivaP/100), tI=cU+iva, pF=tI*(1+ganP/100);
+    if(els.vInU)  els.vInU.textContent  = fmt(inU);
+    if(els.vIndU) els.vIndU.textContent = fmt(indU);
+    if(els.vCU)   els.vCU.textContent   = fmt(cU);
+    if(els.vIVA)  els.vIVA.textContent  = fmt(iva);
+    if(els.vTIVA) els.vTIVA.textContent = fmt(tI);
+    if(els.vPF)   els.vPF.textContent   = fmt(pF);
+    if(els.lblIVA) els.lblIVA.textContent = ivaP;
+    if(els.lblGan) els.lblGan.textContent = ganP;
+
+    autosave();
+  }
+
+  function autosave(){
+    const data = {
+      cantidad: els.cantidad?.value,
+      iva: els.iva?.value,
+      gan: els.gan?.value,
+      moneda: els.moneda?.value,
+      insumos: [...$all('#tbodyInsumos tr')].map(tr=> ({
+        nombre: tr.querySelector('[data-k="nombre"]')?.value||'',
+        precioTotal: tr.querySelector('[data-k="precioTotal"]')?.value||'0',
+        cantidadTotal: tr.querySelector('[data-k="cantidadTotal"]')?.value||'1',
+        unidad: tr.querySelector('[data-k="unidad"]')?.value||'',
+        cantidadUsada: tr.querySelector('[data-k="cantidadUsada"]')?.value||'0'
+      })),
+      indirectos: [...$all('#tbodyCostos tr')].map(tr=> ({
+        nombre: tr.querySelector('[data-k="nombre"]')?.value||'',
+        precioTotal: tr.querySelector('[data-k="precioTotal"]')?.value||'0',
+        periodo: tr.querySelector('[data-k="periodo"]')?.value||'30',
+        cantidadUsada: tr.querySelector('[data-k="cantidadUsada"]')?.value||'0'
+      }))
+    };
+    try{ localStorage.setItem(KEY, JSON.stringify(data)); }catch(e){}
+  }
+
+  function restore(){
+    try{
+      const raw = localStorage.getItem(KEY);
+      if(!raw) return false;
+      const data = JSON.parse(raw);
+      if(els.cantidad) els.cantidad.value = data.cantidad||'10';
+      if(els.iva) els.iva.value = data.iva||'19';
+      if(els.gan) els.gan.value = data.gan||'30';
+      if(els.moneda) els.moneda.value = data.moneda||'CLP';
+
+      // tablas
+      const tbi = $('#tbodyInsumos'); const tbc = $('#tbodyCostos');
+      if(tbi){ tbi.innerHTML = ''; (data.insumos||[]).forEach(it=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = '<td><input data-k="nombre" value="'+(it.nombre||'')+'"></td>' +
+          '<td><input data-k="precioTotal" type="number" value="'+(it.precioTotal||0)+'" step="100"></td>' +
+          '<td><input data-k="cantidadTotal" type="number" value="'+(it.cantidadTotal||1)+'" min="1" step="1"></td>' +
+          '<td><input data-k="unidad" value="'+(it.unidad||'')+'"></td>' +
+          '<td><input data-k="cantidadUsada" type="number" value="'+(it.cantidadUsada||0)+'" min="0" step="1"></td>' +
+          '<td><span class="cellCosto">0.00</span></td><td><button class="del g">✕</button></td>';
+        tbi.appendChild(tr);
+      }); }
+
+      if(tbc){ tbc.innerHTML = ''; (data.indirectos||[]).forEach(it=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = '<td><input data-k="nombre" value="'+(it.nombre||'')+'"></td>' +
+          '<td><input data-k="precioTotal" type="number" value="'+(it.precioTotal||0)+'" step="100"></td>' +
+          '<td><input data-k="periodo" type="number" value="'+(it.periodo||30)+'" min="1" step="1"></td>' +
+          '<td><span class="cellCostoDia">0.00</span></td>' +
+          '<td><input data-k="cantidadUsada" type="number" value="'+(it.cantidadUsada||0)+'" min="0" step="1"></td>' +
+          '<td><span class="cellTotalCosto">0.00</span></td><td><button class="del g">✕</button></td>';
+        tbc.appendChild(tr);
+      }); }
+      return true;
+    }catch(e){ console.warn(e); return false; }
+  }
+
+  // Eventos
+  document.addEventListener('input', function(ev){
+    var t = ev.target;
+    if(!t) return;
+    if(t.id==='cantidad'||t.id==='ivaPct'||t.id==='ganPct'||t.id==='moneda' || t.closest('#tbodyInsumos') || t.closest('#tbodyCostos')){
+      recalc();
+    }
+  });
+
+  document.addEventListener('click', function(ev){
+    var b = ev.target.closest('button'); if(!b) return;
+    if(b.id==='addInsumo'){
+      var tr = document.createElement('tr');
+      tr.innerHTML = '<td><input data-k="nombre"></td><td><input data-k="precioTotal" type="number" value="0" step="100"></td><td><input data-k="cantidadTotal" type="number" value="1" min="1" step="1"></td><td><input data-k="unidad"></td><td><input data-k="cantidadUsada" type="number" value="0" min="0" step="1"></td><td><span class="cellCosto">0.00</span></td><td><button class="del g">✕</button></td>';
+      $('#tbodyInsumos').appendChild(tr); recalc(); notify('Insumo agregado');
+    }
+    if(b.id==='addCosto'){
+      var trc = document.createElement('tr');
+      trc.innerHTML = '<td><input data-k="nombre"></td><td><input data-k="precioTotal" type="number" value="0" step="100"></td><td><input data-k="periodo" type="number" value="30" min="1" step="1"></td><td><span class="cellCostoDia">0.00</span></td><td><input data-k="cantidadUsada" type="number" value="0" min="0" step="1"></td><td><span class="cellTotalCosto">0.00</span></td><td><button class="del g">✕</button></td>';
+      $('#tbodyCostos').appendChild(trc); recalc(); notify('Costo agregado');
+    }
+    if(b.classList.contains('del')){
+      var tb = b.closest('tbody');
+      if(tb && tb.querySelectorAll('tr').length>1){ b.closest('tr').remove(); recalc(); notify('Fila eliminada'); }
+      else notify('Debe mantener al menos una fila');
+    }
+    if(b.id==='btnSave'){ autosave(); notify('Datos guardados'); }
+    if(b.id==='btnReset'){ localStorage.removeItem(KEY); location.reload(); }
+    if(b.id==='btnPDF'){ window.print(); notify('Abriendo diálogo de impresión'); }
+  });
+
+  // Init robusto
+  document.addEventListener('DOMContentLoaded', function(){
+    try{
+      var restored = restore();
+      recalc();
+      if(restored) notify('Datos cargados');
+    }catch(e){
+      console.error('Error en init:', e);
+      notify('Ocurrió un error al iniciar');
+    }
+  });
+})();</script>
+</body>
+</html>
